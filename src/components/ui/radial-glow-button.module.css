@@ -1,0 +1,27 @@
+.rgButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  padding: 16px 36px;
+  border: none;
+  border-radius: var(--radius-pill, 9999px);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-button-text, #fcf6df);
+  background: var(--color-accent, #df6535);
+  cursor: pointer;
+  transition: box-shadow 0.25s ease, transform 0.2s ease, background 0.25s ease;
+}
+
+.rgButton:hover {
+  background: var(--color-accent-2, #eb7f54);
+  box-shadow: 0 8px 24px var(--color-accent-glow, rgba(223, 101, 53, 0.3));
+  transform: translateY(-2px);
+}
+
+.rgButton:active {
+  transform: translateY(0);
+}

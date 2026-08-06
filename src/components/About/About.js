@@ -1,3 +1,5 @@
+'use client';
+
 import siteContent from '@/data/siteContent';
 import styles from './About.module.css';
 

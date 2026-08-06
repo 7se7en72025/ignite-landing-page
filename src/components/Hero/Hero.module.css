@@ -1,166 +1,400 @@
+/* Editorial masthead: everything hangs off one left baseline, with a meta rail
+   above and a stat rail below. Centring all of it was what made the old hero
+   read as a template. */
 .hero {
+  --mx: 50%;
+  --my: 40%;
+  --par: 0px;
+  --copy-par: 0px;
+  --fade: 1;
   position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 140px 24px 80px;
-  background-image: url('https://framerusercontent.com/images/YgBvkDQV4AdpX2f13gFIh6I6NN0.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(239, 234, 211, 0.7);
-  z-index: 0;
-}
-
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 128px var(--gutter) 0;
+  background: var(--color-bg);
+}
+
+/* Photo lives on its own layer so it can parallax on the compositor. Scaled
+   past the frame to leave room for the drift. */
+.photo {
+  position: absolute;
+  inset: -8% -4%;
+  z-index: 0;
+  background-image: url('https://framerusercontent.com/images/YgBvkDQV4AdpX2f13gFIh6I6NN0.jpg');
+  background-size: cover;
+  background-position: center 42%;
+  /* Desaturate + darken the raw coral instead of burying it under opaque
+     gradients — the earlier grade left the desert texture invisible. */
+  filter: saturate(0.55) brightness(0.5) contrast(1.12);
+  transform: translate3d(0, var(--par), 0) scale(1.06);
+  will-change: transform;
+}
+
+/* Vignette + bottom fade into the next section. Lighter than before so the
+   photo still reads through it. */
+.grade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 85% 70% at 26% 40%, rgba(26, 7, 7, 0.12) 0%, rgba(11, 3, 3, 0.62) 62%, rgba(5, 1, 1, 0.9) 100%),
+    linear-gradient(to bottom, rgba(5, 1, 1, 0.68) 0%, rgba(11, 3, 3, 0.12) 32%, rgba(11, 3, 3, 0.55) 74%, var(--color-bg) 100%);
+}
+
+/* Warm light that trails the pointer — the main "it's alive" cue. */
+.aura {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--fade);
+  background: radial-gradient(
+    620px circle at var(--mx) var(--my),
+    rgba(255, 210, 160, 0.16) 0%,
+    rgba(255, 170, 110, 0.07) 34%,
+    transparent 68%
+  );
+}
+
+/* ── Drifting embers ── */
+.embers {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--fade);
+}
+
+.ember {
+  position: absolute;
+  bottom: -6%;
+  left: calc(4% + var(--i) * 6.8%);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0;
+  /* Prime numbers keep the columns from visibly syncing up */
+  animation: rise calc(17s + var(--i) * 1.7s) linear infinite;
+  animation-delay: calc(var(--i) * -2.3s);
+}
+
+@keyframes rise {
+  0%   { opacity: 0;    transform: translate3d(0, 0, 0) scale(0.6); }
+  12%  { opacity: 0.55; }
+  70%  { opacity: 0.35; }
+  100% { opacity: 0;    transform: translate3d(26px, -78vh, 0) scale(1.25); }
+}
+
+/* Film grain — the single cheapest way to stop a flat dark gradient looking
+   synthetic. Inline SVG so it costs no request. */
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: clamp(40px, 7vh, 72px);
+  /* Copy rises against the photo's drift */
+  transform: translate3d(0, var(--copy-par), 0);
+  will-change: transform;
+}
+
+/* ── Meta rail ── */
+.meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: clamp(28px, 5vh, 52px);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 8px 20px;
-  border-radius: 100px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 32px;
-}
-
-.headline {
-  font-size: clamp(3rem, 8vw, 5.5rem);
-  font-weight: 800;
-  color: var(--color-text);
-  line-height: 1.05;
-  margin: 0 0 24px;
-  letter-spacing: -1px;
-}
-
-.headlineAccent {
+  gap: 9px;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
   color: var(--color-accent);
 }
 
+.badgeDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 0 var(--color-accent-glow);
+  animation: pulse 2.8s ease-out infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 210, 160, 0.5); }
+  70%  { box-shadow: 0 0 0 9px rgba(255, 210, 160, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 210, 160, 0); }
+}
+
+/* Coordinates sit opposite the badge — the poster detail that ties back to the
+   intro's Pilani → Dubai route. */
+.coords {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Masthead ── */
+.headline {
+  font-size: clamp(3.1rem, 11.5vw, 9.5rem);
+  font-weight: 200;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.line { display: block; }
+
+/* Slow specular sweep across the accent line — reads as light moving over the
+   letterforms rather than a colour animation. */
+.lineAccent {
+  font-style: italic;
+  font-weight: 200;
+  background: linear-gradient(
+    100deg,
+    var(--color-accent) 0%,
+    var(--color-accent) 34%,
+    #fff6ea 48%,
+    var(--color-accent) 62%,
+    var(--color-accent) 100%
+  );
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sheen 7s ease-in-out infinite;
+}
+
+@keyframes sheen {
+  0%, 22%   { background-position: 130% 0; }
+  62%, 100% { background-position: -30% 0; }
+}
+
+/* Hairline that draws itself in under the masthead */
+.rule {
+  height: 1px;
+  width: 100%;
+  transform-origin: left;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) 0%,
+    rgba(255, 210, 160, 0.25) 32%,
+    var(--color-border) 100%
+  );
+  margin: clamp(28px, 5vh, 52px) 0 clamp(24px, 4vh, 40px);
+}
+
+/* ── Lede + actions ── */
+.body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(28px, 6vw, 80px);
+  flex-wrap: wrap;
+}
+
 .description {
-  font-size: 1.15rem;
-  color: var(--color-text-secondary);
+  max-width: 46ch;
+  font-size: clamp(0.92rem, 1.25vw, 1.02rem);
   line-height: 1.7;
-  max-width: 600px;
-  margin: 0 0 40px;
-  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin: 0;
 }
 
 .ctas {
   display: flex;
-  gap: 16px;
   align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 64px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .ctaPrimary {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 16px 36px;
+  padding: 15px 32px;
+  border-radius: 999px;
   background: var(--color-accent);
-  color: var(--color-button-text);
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 100px;
+  color: var(--color-bg);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: box-shadow 0.3s, transform 0.2s;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s ease;
 }
 
-.ctaPrimary:hover {
-  box-shadow: 0 8px 24px rgba(223, 101, 53, 0.3);
-  transform: translateY(-2px);
+/* Light wipes across the button on hover instead of a flat colour swap */
+.ctaPrimary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* No transform here — the magnetic cursor writes an inline transform on this
+   element, which would always beat a CSS hover rule and snap on mouseout. */
+.ctaPrimary:hover {
+  box-shadow: 0 12px 36px rgba(255, 210, 160, 0.22);
+}
+
+.ctaPrimary:hover::before { transform: translateX(100%); }
 
 .ctaSecondary {
   display: inline-flex;
   align-items: center;
-  padding: 16px 36px;
-  background: transparent;
+  gap: 8px;
+  padding: 15px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
   color: var(--color-text);
-  font-size: 1rem;
-  font-weight: 600;
-  border: 1px solid var(--color-text);
-  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: border-color 0.3s, color 0.3s, background 0.3s;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.ctaSecondary:hover {
-  background: var(--color-text);
-  color: var(--color-bg);
-}
+.ctaSecondary svg { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.ctaSecondary:hover { border-color: var(--color-accent); background: rgba(255, 255, 255, 0.03); }
+.ctaSecondary:hover svg { transform: translateX(4px); }
 
+/* ── Stat rail ── */
 .stats {
-  display: flex;
-  gap: 0;
-  align-items: center;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--color-border);
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 0 36px;
-  border-left: 1px solid var(--color-border);
+  gap: 7px;
+  padding: clamp(20px, 3vh, 30px) 0 clamp(24px, 4vh, 36px);
+  border-right: 1px solid var(--color-border);
+  padding-left: clamp(14px, 2vw, 28px);
 }
 
-.stat:first-child {
-  border-left: none;
-}
+.stat:first-child { padding-left: 0; }
+.stat:last-child  { border-right: none; }
 
 .statValue {
-  font-size: 1.75rem;
-  font-weight: 800;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 200;
+  letter-spacing: -0.03em;
   color: var(--color-text);
-  line-height: 1;
-  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
 }
 
 .statLabel {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
-@media (max-width: 768px) {
-  .hero {
-    padding: 120px 20px 60px;
-    min-height: auto;
-  }
-  .stats {
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
+/* ── Scroll cue ── */
+.scrollCue {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(120px, 20vh, 200px);
+  z-index: 2;
+}
+
+.scrollLine {
+  display: block;
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  animation: cue 2.4s ease-in-out infinite;
+}
+
+@keyframes cue {
+  0%, 100% { opacity: 0.25; transform: scaleY(0.45) translateY(-10px); }
+  50%      { opacity: 0.9;  transform: scaleY(1) translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero { padding-top: 104px; }
+  .body { align-items: flex-start; flex-direction: column; }
+  .ctas { width: 100%; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+
   .stat {
-    border-left: none;
-    padding: 0 20px;
+    padding-left: clamp(12px, 3vw, 20px);
+    border-bottom: 1px solid var(--color-border);
   }
+
+  .stat:nth-child(2n)        { border-right: none; }
+  .stat:nth-child(odd)       { padding-left: 0; }
+  .stat:nth-last-child(-n+2) { border-bottom: none; }
+
+  .scrollCue { display: none; }
+}
+
+@media (max-width: 520px) {
+  .coords { display: none; }
+  .ctas   { flex-direction: column; align-items: stretch; }
+  .ctaPrimary, .ctaSecondary { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badgeDot,
+  .scrollLine,
+  .ember,
+  .lineAccent { animation: none; }
+
+  /* Keep the accent legible once the sheen's gradient-clip is switched off */
+  .lineAccent {
+    background: none;
+    -webkit-text-fill-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .photo, .inner { transform: none; }
+  .aura { opacity: 0.5; }
 }

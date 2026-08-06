@@ -1,27 +1,25 @@
+'use client';
+
 import siteContent from '@/data/siteContent';
+import LogoSlider from '@/components/ui/logo-slider';
 import styles from './Sponsors.module.css';
 
 export default function Sponsors() {
   const { sponsors } = siteContent;
-  const duplicatedLogos = [...sponsors.logos, ...sponsors.logos];
+
+  const logoElements = sponsors.logos.map((logo, i) => (
+    <img key={i} src={logo.src} alt={logo.alt} loading="lazy" />
+  ));
 
   return (
     <section className={styles.section}>
       <p className={styles.label}>{sponsors.label}</p>
-      <div className={styles.marqueeContainer}>
-        <div className={styles.marqueeTrack}>
-          {duplicatedLogos.map((logo, i) => (
-            <img key={i} src={logo.src} alt={logo.alt} className={styles.logo} loading="lazy" />
-          ))}
-        </div>
-      </div>
-      <div className={styles.marqueeContainer}>
-        <div className={`${styles.marqueeTrack} ${styles.marqueeTrackReverse}`}>
-          {duplicatedLogos.map((logo, i) => (
-            <img key={i} src={logo.src} alt={logo.alt} className={styles.logo} loading="lazy" />
-          ))}
-        </div>
-      </div>
+      <LogoSlider
+        logos={logoElements}
+        speed={40}
+        direction="left"
+        pauseOnHover={true}
+      />
     </section>
   );
 }

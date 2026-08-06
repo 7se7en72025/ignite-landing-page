@@ -1,0 +1,50 @@
+/* Only applied once the JS confirms a fine pointer — never hide the native
+   cursor for touch or reduced-motion users, who get no replacement. */
+.hideNative,
+.hideNative * {
+  cursor: none !important;
+}
+
+.dot,
+.ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-accent);
+}
+
+.ring {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 210, 160, 0.45);
+  /* Only these two animate on hover — transform is owned by the rAF loop, so
+     transitioning it here would fight the script every frame. */
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              margin 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.35s ease,
+              background-color 0.35s ease;
+}
+
+/* Grows around the target. Negative margin keeps it concentric without
+   touching the transform the loop is writing. */
+.ringActive {
+  width: 62px;
+  height: 62px;
+  margin: -12px 0 0 -12px;
+  border-color: rgba(255, 210, 160, 0.75);
+  background: rgba(255, 210, 160, 0.07);
+}
+
+@media (pointer: coarse) {
+  .dot, .ring { display: none; }
+}

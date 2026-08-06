@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import siteContent from '@/data/siteContent';
 import styles from './Speakers.module.css';

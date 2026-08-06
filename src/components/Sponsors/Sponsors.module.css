@@ -1,5 +1,5 @@
 .section {
-  padding: 80px 0;
+  padding: calc(var(--section-pad-y) * 0.45) 0;
   overflow: hidden;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
@@ -7,89 +7,42 @@
 }
 
 .label {
-  text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--color-text-muted);
-  font-weight: 600;
-  margin-bottom: 40px;
-}
-
-.marqueeContainer {
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-
-.marqueeContainer::before,
-.marqueeContainer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.marqueeContainer::before {
-  left: 0;
-  background: linear-gradient(to right, var(--color-surface), transparent);
-}
-
-.marqueeContainer::after {
-  right: 0;
-  background: linear-gradient(to left, var(--color-surface), transparent);
-}
-
-.marqueeTrack {
-  display: flex;
-  gap: 60px;
-  align-items: center;
-  width: max-content;
-  animation: scroll 40s linear infinite;
-}
-
-.marqueeTrackReverse {
-  animation-direction: reverse;
-  animation-duration: 35s;
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.logo {
-  height: 26px;
-  opacity: 0.6;
-  filter: grayscale(100%) contrast(200%);
-  transition: opacity 0.3s, filter 0.3s;
-  flex-shrink: 0;
-}
-
-.logo:hover {
-  opacity: 1;
-  filter: none;
+  color: var(--color-accent);
+margin-bottom: 40px;
 }
 
 @media (max-width: 768px) {
   .section {
     padding: 60px 0;
   }
-  .marqueeTrack {
-    gap: 40px;
+}
+
+.section :global(.logo-slider__container) {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.section :global(.logo-slider__track) {
+  animation: logo-scroll calc(var(--speed) * 1s) linear infinite;
+}
+
+.section :global(.logo-slider__container[data-direction="right"] .logo-slider__track) {
+  animation-direction: reverse;
+}
+
+.section :global(.logo-slider__container[data-pause-on-hover="true"]:hover .logo-slider__track) {
+  animation-play-state: paused;
+}
+
+@keyframes logo-scroll {
+  from {
+    transform: translateX(0);
   }
-  .logo {
-    height: 20px;
-  }
-  .marqueeContainer::before,
-  .marqueeContainer::after {
-    width: 60px;
+  to {
+    transform: translateX(-50%);
   }
 }

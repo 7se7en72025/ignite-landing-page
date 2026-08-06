@@ -6,65 +6,72 @@ import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const { nav } = siteContent;
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleLinkClick = () => setMobileOpen(false);
+  // Lock the page behind the mobile sheet
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
 
   return (
-    <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
-      <div className={styles.container}>
-        <a href="#" className={styles.logo}>
-          <span className={styles.logoText}>{nav.logoText}</span>
+    <>
+      <header className={`${styles.bar} ${scrolled ? styles.barScrolled : ''}`}>
+        <a href="#hero" className={styles.logo}>
+          <span className={styles.logoMark}>{nav.logoText}</span>
           <span className={styles.logoYear}>{nav.logoYear}</span>
         </a>
 
-        <div className={styles.navLinks}>
-          {nav.links.map((link) => (
-            <a key={link.label} href={link.href} className={styles.navLink}>
-              {link.label}
-            </a>
+        <nav className={styles.links} aria-label="Primary">
+          {nav.links.map((l) => (
+            <a key={l.label} href={l.href} className={styles.link}>{l.label}</a>
           ))}
-        </div>
+        </nav>
 
-        <a href={nav.ctaHref} className={styles.ctaButton}>
-          {nav.ctaText}
-        </a>
+        <a href={nav.ctaHref} className={styles.cta} data-magnetic>{nav.ctaText}</a>
 
         <button
-          className={`${styles.hamburger} ${mobileOpen ? styles.hamburgerOpen : ''}`}
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
+          className={styles.toggle}
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
         >
-          <span />
-          <span />
-          <span />
+          <span className={`${styles.toggleBar} ${open ? styles.toggleBarTop : ''}`} />
+          <span className={`${styles.toggleBar} ${open ? styles.toggleBarBottom : ''}`} />
         </button>
-      </div>
+      </header>
 
-      <div className={`${styles.mobileMenu} ${mobileOpen ? styles.mobileMenuOpen : ''}`}>
-        <div className={styles.mobileMenuInner}>
-          {nav.links.map((link) => (
+      <div className={`${styles.sheet} ${open ? styles.sheetOpen : ''}`}>
+        <nav className={styles.sheetNav}>
+          {nav.links.map((l, i) => (
             <a
-              key={link.label}
-              href={link.href}
-              className={styles.mobileLink}
-              onClick={handleLinkClick}
+              key={l.label}
+              href={l.href}
+              className={styles.sheetLink}
+              style={{ transitionDelay: open ? `${80 + i * 45}ms` : '0ms' }}
+              onClick={() => setOpen(false)}
             >
-              {link.label}
+              {l.label}
             </a>
           ))}
-          <a href={nav.ctaHref} className={styles.mobileCta} onClick={handleLinkClick}>
+          <a
+            href={nav.ctaHref}
+            className={styles.sheetCta}
+            style={{ transitionDelay: open ? `${80 + nav.links.length * 45}ms` : '0ms' }}
+            onClick={() => setOpen(false)}
+          >
             {nav.ctaText}
           </a>
-        </div>
+        </nav>
       </div>
-    </nav>
+    </>
   );
 }
