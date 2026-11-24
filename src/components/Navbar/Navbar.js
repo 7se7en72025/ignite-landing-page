@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import siteContent from '@/data/siteContent';
 import styles from './Navbar.module.css';
 
@@ -25,18 +26,18 @@ export default function Navbar() {
   return (
     <>
       <header className={`${styles.bar} ${scrolled ? styles.barScrolled : ''}`}>
-        <a href="#hero" className={styles.logo}>
+        <Link href="/#hero" className={styles.logo}>
           <span className={styles.logoMark}>{nav.logoText}</span>
           <span className={styles.logoYear}>{nav.logoYear}</span>
-        </a>
+        </Link>
 
         <nav className={styles.links} aria-label="Primary">
           {nav.links.map((l) => (
-            <a key={l.label} href={l.href} className={styles.link}>{l.label}</a>
+            <Link key={l.label} href={l.href} className={styles.link}>{l.label}</Link>
           ))}
         </nav>
 
-        <a href={nav.ctaHref} className={styles.cta} data-magnetic>{nav.ctaText}</a>
+        <Link href={nav.ctaHref} className={styles.cta} data-magnetic>{nav.ctaText}</Link>
 
         <button
           className={styles.toggle}
@@ -52,7 +53,7 @@ export default function Navbar() {
       <div className={`${styles.sheet} ${open ? styles.sheetOpen : ''}`}>
         <nav className={styles.sheetNav}>
           {nav.links.map((l, i) => (
-            <a
+            <Link
               key={l.label}
               href={l.href}
               className={styles.sheetLink}
@@ -60,16 +61,16 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
             >
               {l.label}
-            </a>
+            </Link>
           ))}
-          <a
+          <Link
             href={nav.ctaHref}
             className={styles.sheetCta}
             style={{ transitionDelay: open ? `${80 + nav.links.length * 45}ms` : '0ms' }}
             onClick={() => setOpen(false)}
           >
             {nav.ctaText}
-          </a>
+          </Link>
         </nav>
       </div>
     </>

@@ -19,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body id="top" className={inter.className}>
         <Cursor />
         <SmoothScroll>{children}</SmoothScroll>
       </body>

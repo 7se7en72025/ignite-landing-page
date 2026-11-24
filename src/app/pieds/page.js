@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from './pieds.module.css';
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer/Footer';
@@ -136,13 +137,13 @@ export default function PiedsPage() {
                 PIEDS (Pilani Innovation &amp; Entrepreneurship Development Society) is an
                 autonomous not-for-profit society registered in 2013 under the Rajasthan
                 Societies Registration Act, 1958. It operates the Technology Business
-                Incubator at BITS Pilani — one of India's premier startup incubators, set up
+                Incubator at BITS Pilani — one of India&apos;s premier startup incubators, set up
                 in 2004 and formally inducted into PIEDS in 2012.
               </p>
               <p className={styles.body}>
-                More than 300 startups have emerged from BITS Pilani since the incubator's
+                More than 300 startups have emerged from BITS Pilani since the incubator&apos;s
                 founding, spanning deep tech, fintech, healthtech, edtech, and consumer
-                internet — built by some of India's most celebrated entrepreneurs.
+                internet — built by some of India&apos;s most celebrated entrepreneurs.
               </p>
               <a href="https://pieds-bitspilani.org/" target="_blank" rel="noopener noreferrer" className={styles.outLink}>
                 Visit pieds-bitspilani.org →
@@ -156,7 +157,7 @@ export default function PiedsPage() {
               />
               <div className={styles.aboutImgBadge}>
                 <img src="/ignite-logo.png" alt="" className={styles.badgeIcon} />
-                <span>Organiser of IGNITE '26</span>
+                <span>Organiser of IGNITE &apos;26</span>
               </div>
             </div>
           </div>
@@ -216,8 +217,8 @@ export default function PiedsPage() {
         <div className={styles.ctaInner}>
           <img src="/ignite-logo.png" alt="" className={styles.ctaLogo} aria-hidden="true" />
           <h2 className={styles.ctaTitle}>Ready to build your startup?</h2>
-          <p className={styles.ctaSub}>Apply for IGNITE 2026 — India's most intense startup sprint, brought to you by PIEDS × BITS Pilani.</p>
-          <a href="/#get-involved" className={styles.ctaBtn}>Apply for IGNITE '26</a>
+          <p className={styles.ctaSub}>Find application details for IGNITE 2026, organized by PIEDS and BITS Pilani.</p>
+          <Link href="/#get-involved" className={styles.ctaBtn}>How to apply for IGNITE 2026</Link>
         </div>
       </section>
 
